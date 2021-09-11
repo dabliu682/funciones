@@ -1,0 +1,59 @@
+/* 
+        Inicio y Fin el mismo día:
+            - 07:00  a 15:00 E y S mayor que 06:00 y menor que 22:00
+            - 00:00  a 05:00 E y S menor que 06:00
+            - 03:00  a 11:00 E menor que 06:00 y S mayor que 6:00 y menor que 22:00
+            - 15:00  a 23:00 E mayor que 06:00 menor que 22:00 y S mayor que 22:00
+
+        Inicio y Fin dias diferentes:
+            - 23:00  a 07:00
+            - 21:30  a 05:00
+            - 22:00  a 05:00
+    */
+    $he = new datetime('2019-01-01 21:00:01');
+    $hs = new datetime('2019-01-02 05:59:59');
+
+
+    $inicio_noche   = new datetime($he->format('y-m-d').' 22:00:00');
+    $fin_noche      = new datetime($hs->format('y-m-d').' 06:00:00');
+    $medianoche     = new datetime($hs->format('y-m-d').' 00:00:00');
+
+    echo 'Entrada: '.$he->format('H:i:s').'<br/>';
+    echo 'Salida: '.$hs->format('H:i:s').'<br/>';
+    if ($he->format('d') == $hs->format('d')) {
+        echo 'Mismo dia <br/>';
+        if ($he->format('H:i:s') >= $medianoche->format('H:i:s') && $hs->format('H:i:s') <= $fin_noche->format('H:i:s')) {
+            $diff = $he->diff($hs);
+            echo 'E mayor que 0 S menor que 6<br/>';
+            echo $diff->format('%H:%i:%s');
+        }
+        if ($he->format('H:i:s') < $fin_noche->format('H:i:s') && $hs->format('H:i:s') > $fin_noche->format('H:i:s')) {
+            $diff = $he->diff($fin_noche);
+            echo 'E menor que 6 S mayor que 6<br/>';
+            echo $diff->format('%H:%i:%s');
+        }
+        if ($he->format('H:i:s') > $fin_noche->format('H:i:s') && $hs->format('H:i:s') > $fin_noche->format('H:i:s')) {
+            $diff = $he->diff($fin_noche);
+            echo 'E mayor que 6 S mayor que 6<br/>';
+            echo '00:00:00';
+        }
+    }
+
+    if ($he->format('d') != $hs->format('d')) {
+        echo 'dia distinto <br/>';
+        if ($he->format('H:i:s') >= $inicio_noche->format('H:i:s') && $hs->format('H:i:s') <= $fin_noche->format('H:i:s')) {
+            $diff = $he->diff($hs);
+            echo 'E mayor que 22 S menor que 6<br/>';
+            echo $diff->format('%H:%i:%s');
+        }
+        if ($he->format('H:i:s') < $inicio_noche->format('H:i:s') && $hs->format('H:i:s') <= $fin_noche->format('H:i:s')) {
+            $diff = $inicio_noche->diff($hs);
+            echo 'E menor que 22 S menor que 6<br/>';
+            echo $diff->format('%H:%i:%s');
+        }
+        if ($he->format('H:i:s') < $inicio_noche->format('H:i:s') && $hs->format('H:i:s') > $fin_noche->format('H:i:s')) {
+            $diff = $inicio_noche->diff($fin_noche);
+            echo 'E menor que 22 S mayor que 6<br/>';
+            echo $diff->format('%H:%i:%s');
+        }
+    } 
